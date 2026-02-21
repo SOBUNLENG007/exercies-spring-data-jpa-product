@@ -43,9 +43,12 @@ jobs:
           echo "image=ghcr.io/$OWNER/$REPO" >> $GITHUB_OUTPUT
           echo "tag=${{ github.sha }}" >> $GITHUB_OUTPUT
 
+      # ✅ FIX 1: clean package (creates target/classes)
+      # ✅ FIX 2: force Java 21 runtime base image
       - name: Build & Push with Jib
         run: |
-          mvn -B -DskipTests jib:build \
+          mvn -B -DskipTests clean package jib:build \
+            -Djib.from.image=eclipse-temurin:21-jre \
             -Djib.to.image=${{ steps.meta.outputs.image }} \
             -Djib.to.tags=latest,${{ steps.meta.outputs.tag }}
 
@@ -60,7 +63,6 @@ jobs:
       - name: Install Railway CLI
         run: npm i -g @railway/cli
 
-      # ✅ Railway token is used HERE
       - name: Deploy (Railway)
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
