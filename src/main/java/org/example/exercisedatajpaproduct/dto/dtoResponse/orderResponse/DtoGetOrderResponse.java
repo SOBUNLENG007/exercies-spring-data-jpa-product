@@ -23,6 +23,7 @@ public class DtoGetOrderResponse {
 
      public void responseGetOrder(Order order){
          this.id =  order.getId();
+
          this.orderDate = order.getOrderDate();
          this.totalAmount = order.getTotalAmount();
          this.status = order.getStatus().toString();
